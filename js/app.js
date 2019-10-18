@@ -6,7 +6,7 @@ const nameContainer = document.querySelector(".main__profile-name");
 const unContainer = document.querySelector(".main__profile-username");
 const reposContainer = document.querySelector(".main__profile-repos");
 const urlContainer = document.querySelector(".main__profile-url");
-const commitContainer = document.querySelector(".main__profile-commits"); 
+// const commitContainer = document.querySelector(".main__profile-commits"); 
 
 const clientId = "Iv1.9e39903e84bf3a07";
 const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
@@ -71,15 +71,16 @@ const pieGenerator = async () => {
       return repoStat;
     })
   );
-
-  let pieData = {};
-  for (let i = 0; i < repoNames.length; i++) {
-    pieData[repoNames[i]] = repoCommits[i];
+  // const pieDataLabels = ["name", "commits"]
+  let pieArray = []; 
+  
+  for (let i = 0; i < repoCommits.length; i++) {
+    pieArray.push({ name : repoNames[i] , commits :  repoCommits[i] })
   }
 
-  let jasonPieData = JSON.stringify(pieData);
-  console.log(jasonPieData);
-
+  // let jasonPieData = JSON.stringify(pieData);
+  // console.log(jasonPieData);
+  console.log(pieArray); 
 }
 
 
