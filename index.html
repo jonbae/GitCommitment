@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="./img/favicon.png">
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="./js/app.js"></script>
   <title>GitFetch</title>
 </head>
 
@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col-lg-12 col-md-12">
           <div class="main__text-container">
-            <h1 class="main__title">GitFetch - Profile Finder <br> for GitHub</h1>
+            <h1 class="main__title">GitCommitment - <br> git commit visualization <br> for GitHub</h1>
             <p class="main__subtitle">Check out the repos, followers and more,
               <br> just by entering a username!</p>
           </div>
@@ -58,16 +58,16 @@
       </div>
       <div class="col-lg-12">
         <div class="main__vis-container">
-          <div>
-            <svg width="500" height="400"> </svg>
+          <div id="vis">
+            
           </div>
         </div>
       </div>
     </div>
   </div>
   
-  <script src="./js/pie.js"></script>
-  <script src="./js/app.js"></script>
+  <!-- <script src="./js/pie.js"></script> -->
+
   <!-- main end -->
 
 
