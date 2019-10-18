@@ -1,5 +1,5 @@
 const userInputValue = document.querySelector("#search-user");
-const repoInputValue = document.querySelector("#search-repo");
+// const repoInputValue = document.querySelector("#search-repo");
 
 const searchButton = document.querySelector(".searchButton");
 const nameContainer = document.querySelector(".main__profile-name");
@@ -14,120 +14,66 @@ const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
 const fetchUsers = async (user) => {
   const user_api_call = await fetch(`https://api.github.com/users/${user}?client_id=${clientId}&client_secret=${clientSecret}`);
    
-  const user_data = await user_api_call.json(); 
-  return { userData: user_data };
+  const userData = await user_api_call.json(); 
+  return userData; 
 };
 
-
-const fetchRepos = async (owner) => {
+const fetchRepos = async owner => {
   const repo_api_call = await fetch(
     `https://api.github.com/users/${owner}/repos?client_id=${clientId}&client_secret=${clientSecret}`
-    
-    
-    );
-    const repo_data = await repo_api_call.json(); 
-    console.log(repo_data[0].full_name)
-    return {repoData: repo_data }; 
-  }
+  );
+  const repo_data = await repo_api_call.json();
+  const repoNames = repo_data.map( repo_datum => 
+      repo_datum.name
+    )
+  return repoNames; 
 
-const fetchRepoStats = async (ownerRepo) => {
-  const repo_stats_api_call = await fetch(`https://api.github.com/repos/${ownerRepo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`);
-
-  const repo_stats_data = await repo_stats_api_call.json(); 
-
-  return { repoStats: repo_stats_data };
 
 }
 
-const showData = () => {
-  fetchUsers(userInputValue.value).then(res => {
-    nameContainer.innerHTML = `Name: <span class="main__profile-value">${res.userData.name}</span>`
-    unContainer.innerHTML = `Username: <span class="main__profile-value">${res.userData.login}</span>`
-    reposContainer.innerHTML = `Repos: <span class="main__profile-value">${res.userData.public_repos}</span>`
-    urlContainer.innerHTML = `Url: <span class="main__profile-value">${res.userData.html_url}</span>`
-  }); 
 
-  // fetchRepoStats(userInputValue.value, repoInputValue.value).then(res => {
-  //   // console.log(res)
-  //   // console.log(typeof res)
-  //   // console.log(res.repoStats)
+const fetchRepoStats = async (owner, repo) => {
+  const repo_stats_api_call = await fetch(`https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`);
 
-  //   let sum = 0; 
-  //   res.repoStats.map( ele => {
-  //     return sum+=ele.total
-  //   })
-                                                                                                      
-  //   // res.repoStats.map( ele => {
-  //   //   console.log(ele.week);
-  //   //   ele.days.map( day => {
-  //   //     console.log(day);
-  //   //   })
-  //   // })
+  const repo_stats_data = await repo_stats_api_call.json(); 
+  let sum = 0; 
+  // console.log(repo_stats_data);
+  repo_stats_data.map( repo_stats_datum => 
+    sum += repo_stats_datum.total
+  )
+  return sum; 
 
-  //   commitContainer.innerHTML = `Repo Commits: <span class="main__profile-value">${sum}</span>`
-  // })
+}
 
-  fetchRepos(userInputValue.value).then(userRes => {
-    // console.log(typeof userRes.repoData)
-    // console.log(userRes.repoData);
-    // userRes.repoData.map( ele => console.log(ele.full_name))
-    const userRepos = userRes.repoData.map( ele => ele.full_name)
-    const userRepoName = userRes.repoData.map( ele => ele.name )
-    console.log(userRepos);
-    console.log(userRepoName)
+const  showData = async () => {
+  // fetchUsers(userInputValue.value).then(res => {
+  //   nameContainer.innerHTML = `Name: <span class="main__profile-value">${res.userData.name}</span>`
+  //   unContainer.innerHTML = `Username: <span class="main__profile-value">${res.userData.login}</span>`
+  //   reposContainer.innerHTML = `Repos: <span class="main__profile-value">${res.userData.public_repos}</span>`
+  //   urlContainer.innerHTML = `Url: <span class="main__profile-value">${res.userData.html_url}</span>`
+  // }); 
+  const user = await fetchUsers(userInputValue.value); 
+  nameContainer.innerHTML = `Name: <span class="main__profile-value">${user.name}</span>`
+  unContainer.innerHTML = `Username: <span class="main__profile-value">${user.login}</span>`
+  reposContainer.innerHTML = `Repos: <span class="main__profile-value">${user.public_repos}</span>`
+  urlContainer.innerHTML = `URL: <span class="main__profile-value">${user.html_url}</span>`
 
-    const promiseArr = []; 
-    let sums =  []; 
-    
-    userRepos.map( userRepo => {
-      let sum = 0; 
-      promiseArr.push( fetchRepoStats(userRepo).then(res => {
-        return res.repoStats.map( ele => {
-          
-          return sum += ele.total; 
-        })
-        
-      }))
+
+  // storage start 
+
+  // storage end 
+  const repoNames = await fetchRepos(userInputValue.value)
+
+
+
+  const repoCommits = await Promise.all( repoNames.map( async (repoName) => {
+     const repoStat = await fetchRepoStats(userInputValue.value,repoName); 
+    //  console.log(repoStat);
+     return repoStat; 
     })
-
-    console.log(promiseArr);
-    console.log("_");
-
-    Promise.all(promiseArr).then(
-      data => {
-        data.map(
-          datum => {
-            sums.push(datum[datum.length-1])
-            console.log(datum[datum.length-1])
-            return datum[datum.length-1]
-          })
-      })
-    
-
-
-    // let userSum = 0;
-    // userRepos.map( userRepo => {
-    //   let sum = 0;
-    //   fetchRepoStats(userRepo).then(res => {
-    //     console.log("this is the start of a repo");
-          
-    //       res.repoStats.map( ele => {
-    //         return sum += ele.total;
-    //       })
-    //       console.log(sum); 
-    //     console.log("this is the end of a repo");
-        
-    //   })
-    //   console.log(userSum)  
-    //   return userSum += sum;
-
-    // }) 
-    
-    // console.log(userSum)    
-
-  })
-  
-  ;
+  ); 
+  console.log(repoNames)
+  console.log(repoCommits); 
 
 }
 
@@ -137,14 +83,3 @@ searchButton.addEventListener("click", ()=>{
 
 
 
-
-
-// fetchRepos(userInputValue.value).then(userRes => {
-//   const userRepos = userRes.repoData.map( ele => ele.full_name)
-//   return userRepos; 
-// }).then( userRepos => {
-//   userRepos.map( userRepo => {
-//     let sum = 0; 
-    
-//   })
-// })
