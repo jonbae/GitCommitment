@@ -59,26 +59,34 @@ const  showData = async () => {
   urlContainer.innerHTML = `URL: <span class="main__profile-value">${user.html_url}</span>`
 
 
-  // storage start 
+}
 
-  // storage end 
-  const repoNames = await fetchRepos(userInputValue.value)
+const pieGenerator = async () => {
 
-
-
-  const repoCommits = await Promise.all( repoNames.map( async (repoName) => {
-     const repoStat = await fetchRepoStats(userInputValue.value,repoName); 
-    //  console.log(repoStat);
-     return repoStat; 
+  const repoNames = await fetchRepos(userInputValue.value);
+  const repoCommits = await Promise.all(
+    repoNames.map(async repoName => {
+      const repoStat = await fetchRepoStats(userInputValue.value, repoName);
+      //  console.log(repoStat);
+      return repoStat;
     })
-  ); 
-  console.log(repoNames)
-  console.log(repoCommits); 
+  );
+
+  let pieData = {};
+  for (let i = 0; i < repoNames.length; i++) {
+    pieData[repoNames[i]] = repoCommits[i];
+  }
+
+  let jasonPieData = JSON.stringify(pieData);
+  console.log(jasonPieData);
 
 }
 
+
+
 searchButton.addEventListener("click", ()=>{
   showData(); 
+  pieGenerator(); 
 })
 
 
