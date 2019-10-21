@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(data);
 
 
-
+    d3.selectAll("#vis > *").remove();
     
 
      let width = 450;
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
      // Define the div for the tooltip
     var div = d3
-      .select("body")
+      .select("#vis")
       .append("div")
       .attr("id", "tooltip")				
       .style("opacity", 0);
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .duration(300) 
          .style("opacity", 1)
 
-         div.html(d.data.key + "<br/>" + d.data.value)
+         div.html(`${d.data.key} has <br/> ${d.data.value} commits`)
           
           
       
