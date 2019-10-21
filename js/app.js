@@ -127,6 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
      var data_ready = await pie(d3.entries(data));
      console.log(data_ready);
+
+
+     // Define the div for the tooltip
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("id", "tooltip")				
+      .style("opacity", 0);
      svg
        .selectAll("whatever")
        .data(data_ready)
@@ -145,16 +153,35 @@ document.addEventListener("DOMContentLoaded", () => {
        })
        .attr("stroke", "black")
        .style("stroke-width", "2px")
-       .style("opacity", 0.7);
+       .style("opacity", 0.7)
+       .on("mouseover", function(d) {
+         console.log(d.data.key)
+         div.transition()
+          .duration(300) 
+         .style("opacity", 1)
+
+         div.html(d.data.key + "<br/>" + d.data.value)
+          
+          
+      
+       })
+       .on("mousemove", function(d) {
+         d3.select("#tooltip")
+           .style("top", d3.event.pageY - 10 + "px")
+           .style("left", d3.event.pageX + 10 + "px");
+       })
+       .on("mouseout", function() {
+         d3.select("#tooltip").style("opacity", 0);
+       });
 
      svg
        .selectAll("mySlices")
        .data(data_ready)
        .enter()
        .append("text")
-       .text(function(d) {
-         return d.data.key;
-       })
+      //  .text(function(d) {
+      //    return d.data.key;
+      //  })
        .attr("transform", function(d) {
          return "translate(" + arcGenerator.centroid(d) + ")";
        })
