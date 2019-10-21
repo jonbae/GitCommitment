@@ -4,11 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // const repoInputValue = document.querySelector("#search-repo");
 
   const searchButton = document.querySelector(".searchButton");
-  const nameContainer = document.querySelector(".main__profile-name");
-  const unContainer = document.querySelector(".main__profile-username");
-  const reposContainer = document.querySelector(".main__profile-repos");
-  const urlContainer = document.querySelector(".main__profile-url");
-  const commitContainer = document.querySelector(".main__profile-commits"); 
+  const nameContainer = document.querySelector(".main-profile-name");
+  const unContainer = document.querySelector(".main-profile-un");
+  const reposContainer = document.querySelector(".main-profile-repos");
+  const urlContainer = document.querySelector(".main-profile-url");
+  const commitContainer = document.querySelector(".main-profile-commits"); 
 
   const clientId = "Iv1.9e39903e84bf3a07";
   const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
@@ -36,8 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fetchRepoStats = async (owner, repo) => {
     const repo_stats_api_call = await fetch(`https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`);
-
+    console.log(repo_stats_api_call)
     const repo_stats_data = await repo_stats_api_call.json(); 
+    console.log(repo_stats_data)
+    
     let sum = 0; 
     // console.log(repo_stats_data);
     repo_stats_data.map( repo_stats_datum => 
@@ -83,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     d3.selectAll("#vis > *").remove();
     
 
-     let width = 450;
-     let height = 450;
+     let width = 500;
+     let height = 500;
      let margin = 40;
      let radius = Math.min(width, height) / 2 - margin;
 
@@ -158,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
          console.log(d.data.key)
          div.transition()
           .duration(300) 
-         .style("opacity", 1)
+          .style("opacity", 1)
 
          div.html(`${d.data.key} has <br/> ${d.data.value} commits`)
           
@@ -193,10 +195,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   searchButton.addEventListener("click", ()=>{
-    showData(); 
-    // pieGenerator();
-    pieGenerator(); 
-    // test();
+    if(userInputValue.value !== ""){
+      showData(); 
+      pieGenerator(); 
+    }
+  })
+
+  userInputValue.addEventListener("keydown", e => {
+    if(e.key === "Enter"){
+      e.preventDefault(); 
+      if (userInputValue.value !== "") {
+        showData();
+        pieGenerator();
+      }
+    }
   })
 
 })

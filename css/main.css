@@ -1,5 +1,17 @@
+@import "reset.css"; 
+
+
+
 .main{ 
-  /* background-color: lightgrey;  */
+ /* background: linear-gradient(135deg, #ccc, #777); */
+  background-image: 
+  height: 100vh;
+}
+
+.container{ 
+  display: flex; 
+  justify-content: space-around;
+  padding: 50px;
 }
 
 #tooltip {
@@ -26,4 +38,41 @@
   font-family: sans-serif;
   font-size: 16px;
   line-height: 20px;
+}
+
+.main-vis-container{ 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  width: 500px; 
+}
+.main-title {
+  font-size: 48px;
+  margin: 10px 0;
+  font-weight: bold;
+      color: #8FB339;
+}
+.main-subtitle {
+  font-size: 20px;
+  margin: 30px 0;
+}
+
+.main-input-container {
+    margin: 10px 0;
+}
+
+.main-profile > p {
+    margin: 10px 0;
+}
+
+#vis > p {
+    font-size: 24px;
+}
+
+
+.main-input-container > * {
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
 }

@@ -13,32 +13,45 @@
 
 <body>
   <!-- main start -->
+
 <div class="main" id="main">
-  <div>
-    <h1 class="main-title">GitCommitment - <br> git commit visualization <br> for Github </h1>
-    <p class="main-subtitle">Check out the repos, followers and commit <br> just by entering a username</p>
-  </div>
-  <div class="main-input-container">
-    <input type="text" id="search-user" class="main-input" placeholder="Enter a username">
-
-    <span>
-      <a class="btn btn-shallow searchButton">Search</a>
-    </span>
-
-  </div>
-  <div class="main-profile-container">
+  <div class="container">
     <div class="main-profile">
+      <div class="main-header">
+        <h1 class="main-title">GitCommitment - <br> git commit visualization <br> for Github </h1>
+        <p class="main-subtitle">Check out the repos, followers and commit <br> just by entering a username</p>
+      </div>
+      <div class="main-input-container">
+        <input type="text" id="search-user" class="main-input" placeholder="Enter a username">
 
-      <p class="main-profile-name"></p>
-      <p class="main-profile-un"></p>
-      <p class="main-profile-repos"></p>
-      <p class="main-profile-url"></p>
+        <!-- <span>
+          <a class="btn btn-shallow searchButton">Search</a>
+        </span> -->
+        <button type="submit" class="searchButton">Search</button>
+
+      </div>
+      <div class="main-profile-container">
+        <div class="main-profile">
+
+          <p class="main-profile-name"></p>
+          <p class="main-profile-un"></p>
+          <p class="main-profile-repos"></p>
+          <p class="main-profile-url"></p>
+
+        </div>
+
+      </div>
 
     </div>
 
-  </div>
-  <div class="main-vis-container">
-    <div id="vis"></div>
+
+    <div class="main-vis-container">
+      <div id="vis">
+        <p>
+          Your stats will be here
+        </p>
+      </div>
+    </div>
   </div>
 </div>
   
