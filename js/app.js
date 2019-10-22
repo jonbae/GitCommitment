@@ -65,8 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  const pieGenerator = async () => {
-
+  const repoData = async () => {
     const repoNames = await fetchRepos(userInputValue.value);
     const repoCommits = await Promise.all(
       repoNames.map(async repoName => {
@@ -81,130 +80,181 @@ document.addEventListener("DOMContentLoaded", () => {
       data[repoNames[i]] = repoCommits[i];
     }
 
-    //beginning of pie chart end of fetch requests 
-
-
+    //beginning of pie chart end of fetch requests
 
     console.log(data);
+    return data; 
+  };
 
 
+  const pieGenerator = async data => {
     d3.selectAll("#vis > *").remove();
-    
 
-     let width = 500;
-     let height = 500;
-     let margin = 40;
-     let radius = Math.min(width, height) / 2 - margin;
+    let width = 500;
+    let height = 500;
+    let margin = 40;
+    let radius = Math.min(width, height) / 2 - margin;
 
-     var svg = d3
-       .select("#vis")
-       .append("svg")
-       .attr("width", width)
-       .attr("height", height)
-       .append("g")
-       .attr("transform", `translate( ${width / 2},${height / 2})`);
+    var svg = d3
+      .select("#vis")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", `translate( ${width / 2},${height / 2})`);
 
-     // var data = await { a: 9, b: 20, c: 30, d: 8, e: 12 };
+    //  data =  { a: 9, b: 20, c: 30, d: 8, e: 12 };
 
-     var color = d3
-       .scaleOrdinal()
-       .domain(data)
-       .range([
-          "#FFF07C", 
-          "#80FF72",
-          "#7EE8FA",
-          "#00DBBE",
-          "#00E89E",
-          "#00FCAC",
-          "#d3ac00",
-          "#f7e600",
-          "#a2e800",
-          "#03d300",
-          "#00d176"
-       ]);
+    var color = d3
+      .scaleOrdinal()
+      .domain(data)
+      .range([
+        "#FFF07C",
+        "#80FF72",
+        "#7EE8FA",
+        "#00DBBE",
+        "#00E89E",
+        "#00FCAC",
+        "#d3ac00",
+        "#f7e600",
+        "#a2e800",
+        "#03d300",
+        "#00d176"
+      ]);
 
-     var pie = d3.pie().value(function(d) {
-       console.log(d);
-       console.log(d.value);
-       return d.value;
-     });
+    var pie = d3.pie().value(function(d) {
+      console.log(d);
+      console.log(d.value);
+      return d.value;
+    });
 
-     var arcGenerator = d3
-       .arc()
-       .innerRadius(0)
-       .outerRadius(radius);
+    var arcGenerator = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(radius);
 
-     var data_ready = await pie(d3.entries(data));
-     console.log(data_ready);
+    var data_ready = await pie(d3.entries(data));
+    console.log(data_ready);
 
-
-     // Define the div for the tooltip
+    // Define the div for the tooltip
     var div = d3
       .select("#vis")
       .append("div")
-      .attr("id", "tooltip")				
+      .attr("id", "tooltip")
       .style("opacity", 0);
-     svg
-       .selectAll("whatever")
-       .data(data_ready)
-       .enter()
-       .append("path")
-       .attr(
-         "d",
-         d3
-           .arc()
-           .innerRadius(0)
-           .outerRadius(radius)
-       )
-       .attr("fill", function(d) {
-      
-         return color(d.data.key);
-       })
-       .attr("stroke", "black")
-       .style("stroke-width", "2px")
-       .style("opacity", 0.7)
-       .on("mouseover", function(d) {
+    svg
+      .selectAll("whatever")
+      .data(data_ready)
+      .enter()
+      .append("path")
+      .attr(
+        "d",
+        d3
+          .arc()
+          .innerRadius(radius - 75)
+          .outerRadius(radius)
+      )
+      .attr("fill", function(d) {
+        return color(d.data.key);
+      })
+      .attr("stroke", "black")
+      .style("stroke-width", "2px")
+      .style("opacity", 0.7)
+      .on("mouseover", function(d) {
+        div
+          .transition()
+          .duration(300)
+          .style("opacity", 1);
 
-         div.transition()
-          .duration(300) 
-          .style("opacity", 1)
+        div.html(
+          `<p><span class="bold">${d.data.key}</span> has <br/> ${d.data.value} commits</p>`
+        );
+      })
+      .on("mousemove", function(d) {
+        d3.select("#tooltip")
+          .style("top", d3.event.pageY - 10 + "px")
+          .style("left", d3.event.pageX + 10 + "px");
+      })
+      .on("mouseout", function() {
+        d3.select("#tooltip").style("opacity", 0);
+      });
 
-         div.html(`<p><span class="bold">${d.data.key}</span> has <br/> ${d.data.value} commits</p>`)
-          
-          
-      
-       })
-       .on("mousemove", function(d) {
-         d3.select("#tooltip")
-           .style("top", d3.event.pageY - 10 + "px")
-           .style("left", d3.event.pageX + 10 + "px");
-       })
-       .on("mouseout", function() {
-         d3.select("#tooltip").style("opacity", 0);
-       });
-
-     svg
-       .selectAll("mySlices")
-       .data(data_ready)
-       .enter()
-       .append("text")
+    svg
+      .selectAll("mySlices")
+      .data(data_ready)
+      .enter()
+      .append("text")
       //  .text(function(d) {
       //    return d.data.key;
       //  })
-       .attr("transform", function(d) {
-         return "translate(" + arcGenerator.centroid(d) + ")";
-       })
-       .style("text-anchor", "middle")
-       .style("font-size", 17);
+      .attr("transform", function(d) {
+        return "translate(" + arcGenerator.centroid(d) + ")";
+      })
+      .style("text-anchor", "middle")
+      .style("font-size", 17);
 
+    svg
+      .transition()
+      .duration(500)
+      .attr("d", arcGenerator); // redrawing the path with a smooth transition
 
-  }
+    // const change = data => {
+    //   var pie = d3
+    //        .pie()
+    //        .value(function(d) {
+    //          return d.value;
+    //        })
+    //        .sort(null)(data);
+    //      var width = 360;
+    //      var height = 360;
+    //      var radius = Math.min(width, height) / 2;
+    //      var donutWidth = 75;
+    //      path = d3
+    //        .select("#donut")
+    //        .selectAll("path")
+    //        .data(pie); // Compute the new angles
+    //      var arc = d3
+    //        .arc()
+    //        .innerRadius(radius - donutWidth)
+    //        .outerRadius(radius);
+    //      path
+    //        .transition()
+    //        .duration(500)
+    //        .attr("d", arc); // redrawing the path with a smooth transition
+    // }
+
+    //  function change(data) {
+    //    var pie = d3
+    //      .pie()
+    //      .value(function(d) {
+    //        return d.value;
+    //      })
+    //      .sort(null)(data);
+    //    var width = 360;
+    //    var height = 360;
+    //    var radius = Math.min(width, height) / 2;
+    //    var donutWidth = 75;
+    //    path = d3
+    //      .select("#donut")
+    //      .selectAll("path")
+    //      .data(pie); // Compute the new angles
+    //    var arc = d3
+    //      .arc()
+    //      .innerRadius(radius - donutWidth)
+    //      .outerRadius(radius);
+    //    path
+    //      .transition()
+    //      .duration(500)
+    //      .attr("d", arc); // redrawing the path with a smooth transition
+    //  }
+  };
 
 
   searchButton.addEventListener("click", ()=>{
     if(userInputValue.value !== ""){
       showData(); 
-      pieGenerator(); 
+
+      pieGenerator(repoData()); 
     }
   })
 
@@ -213,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault(); 
       if (userInputValue.value !== "") {
         showData();
-        pieGenerator();
+        pieGenerator(repoData());
       }
     }
   })
