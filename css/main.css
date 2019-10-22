@@ -8,10 +8,6 @@
   height: 100vh;
 }
 
-span.bold{
-  font-weight: 900px;
-}
-
 .container{ 
   display: flex; 
   justify-content: space-around;
