@@ -1,12 +1,12 @@
 {
-  "name": "git-fetch",
+  "name": "git-commitment",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node-sass sass/style.scss css/style.css -w"
   },
-  "author": "Hamza Mirza",
+  "author": "Jonathan Bae",
   "license": "ISC",
   "devDependencies": {
     "bootstrap": "^3.4.1",
