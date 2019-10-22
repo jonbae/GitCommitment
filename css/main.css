@@ -4,8 +4,12 @@
 
 .main{ 
  /* background: linear-gradient(135deg, #ccc, #777); */
-  background-image: 
+
   height: 100vh;
+}
+
+span.bold{
+  font-weight: 900px;
 }
 
 .container{ 
