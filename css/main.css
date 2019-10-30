@@ -41,13 +41,13 @@ div.main-profile-avatar > img {
   line-height: 20px;
 }
 
-.main-vis-container{ 
+/* .main-vis-container{ 
   display: flex; 
   align-items: center;
   justify-content: center;
   height: 500px;
   width: 500px; 
-}
+} */
 .main-title {
   font-size: 48px;
   margin: 10px 0;

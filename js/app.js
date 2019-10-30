@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const repoBarGraph = async () => {
+    d3.selectAll("#bar-vis > *").remove();
+
     const repoNames = await fetchRepos(userInputValue.value);
     const days = [
       "Sunday",
@@ -189,75 +191,192 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 
-  // const repoPieChart = async () => {
-  //   const repoNames = await fetchRepos(userInputValue.value);
-  //   const repoCommits = await Promise.all(
-  //     repoNames.map(async repoName => {
-  //       const repoStats = await fetchRepoStats(
-  //         userInputValue.value,
-  //         repoName
-  //       );
-  //       let sum = 0;
-  //       repoStats.map(repoStat => (sum += repoStat.total));
-  //       return sum;
-  //     })
-  //   );
+  const repoPieChart = async () => {
+    d3.selectAll("#pie-vis > *").remove();
 
-  //   let pieData = [];
-  //   for (let i = 0; i < repoNames.length; i++) {
-  //     pieData.push({ repo: repoNames[i], commits: repoCommits[i] });
-  //   }
+    const repoNames = await fetchRepos(userInputValue.value);
+    const repoCommits = await Promise.all(
+      repoNames.map(async repoName => {
+        
+        const repoStats = await fetchRepoStats(
+          userInputValue.value,
+          repoName
+        );
+        let sum = 0;
+        console.log(repoStats)
+        repoStats.map(repoStat => (sum += repoStat.total));
+        return sum;
+      })
+    );
 
-  //   //beginning of pie chart end of fetch requests
+    let pieData = [];
+    for (let i = 0; i < repoNames.length; i++) {
+      pieData.push({ repo: repoNames[i], commits: repoCommits[i] });
+    }
 
-  //   console.log("repo data");
-  //   console.log(pieData);
+    //beginning of pie chart end of fetch requests
 
-  //   var width = 500;
-  //   var height = 500;
-  //   var innerRadius = 0;
-  //   var outerRadius = Math.min(width, height) / 2 ;
+   
 
-  //   var color = d3.scaleOrdinal();
+    var width = 500;
+    var height = 500;
+    var innerRadius = 0;
+    var outerRadius = Math.min(width, height) / 2 ;
 
-  //   var pie = d3.pie()
-  //     .value( function(d) {
-  //       console.log(d)
-  //       return d.commits;
-  //     })
+    var color = d3.scaleOrdinal()
+       .domain(pieData)
+       .range([
+         "#d4c685",
+         "#f7ef81",
+         "#cfe795",
+         "#a7d3a6",
+         "#add2c2",
+         "#d3ac00",
+         "#f7e600",
+         "#a2e800",
+         "#03d300",
+         "#00d176"
+       ]);
+    var pie = d3.pie()
+      .value( function(d) {
 
-  //   var svg = d3.select('#pie-vis')
-  //     .attr('width', width)
-  //     .attr('height', height)
-  //     .append('g')
-  //     .attr('transform', `translate(${width/2},${height/2})`)
+        return d.commits;
+      })
 
-  //   var arc = d3.arc()
-  //     .innerRadius(0)
-  //     .outerRadius(outerRadius)
+    var data_ready = await pie(d3.entries(pieData));
+    console.log(data_ready);
 
-  //   var path = svg.datum(pieData).selectAll('path')
-  //     .data(pie)
-  //     .enter().append('path')
-  //     .attr('fill', (d,i) => { return color(i); })
-  //     .attr('d', arc)
-  //     // set wedge opacity to 0 if it has mass on load (only the last wedge has mass to account for transition in
-  //     // .style('opacity', function (d) { return d.data[0] === 0 ? 1 : 0; })
-  //     // .each(function (d) { this._current = d; })
+    var div = d3
+      .select(".main-vis-container")
+      .append("div")
+      .attr("id", "tooltip")
+      .style("opacity", 0);
 
-  //   // pie.value( d => d[0])
-  //   // path = path.data(pie);
-  //   // path.transition()
-  //   //   .duration(1000).attrTween('d', arcTween);
+    var svg = d3
+      .select("#pie-vis")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", `translate(${width / 2},${height / 2})`)
 
-  //   // function arcTween(a) {
-  //   //   var i =  d3.interpolate(this._current, a);
-  //   //   this._current = i(0);
-  //   //   return function(t) {
-  //   //     return arc(i(t));
-  //   //   };
-  //   // }
-  // };
+
+      
+    var arc = d3.arc()
+      .innerRadius(0)
+      .outerRadius(outerRadius)
+
+    var path = svg
+      .datum(pieData)
+      .selectAll("path")
+      .data(pie)
+      .enter()
+      .append("path")
+      .attr("fill", (d, i) => {
+        return color(i);
+      })
+      .attr("d", arc)
+      .on("mouseover", function(d) {
+        console.log(data_ready)
+        console.log(d);
+        div.style("opacity", 1);
+
+        div.html(`${d.data.repo} has <br/> ${d.data.commits} commits`);
+      })
+      .on("mousemove", function(d) {
+        d3.select("#tooltip")
+          .style("top", d3.event.pageY - 10 + "px")
+          .style("left", d3.event.pageX + 10 + "px");
+      })
+      .on("mouseout", function() {
+        d3.select("#tooltip").style("opacity", 0);
+      })
+      .each(function() {
+        this._current = {
+          startAngle: 0,
+          endAngle: 0
+        };
+      })
+      .transition()
+      .duration(1000)
+      .attrTween("d", function(d) {
+        var interpolate = d3.interpolate(this._current, d);
+        this._current = interpolate(0);
+
+        return function(t) {
+          return arc(interpolate(t));
+        };
+      })
+      
+      // pie.value( d => d[0])
+      // path = path.data(pie);
+      // path.transition()
+      //   .duration(1000).attrTween('d', arcTween);
+
+      // function arcTween(a) {
+      //   var i =  d3.interpolate(this._current, a);
+      //   this._current = i(0);
+      //   return function(t) {
+      //     return arc(i(t));
+      //   };
+      // }
+
+      
+      // set wedge opacity to 0 if it has mass on load (only the last wedge has mass to account for transition in
+      // .style('opacity', function (d) { return d.data[0] === 0 ? 1 : 0; })
+      // .each(function (d) { this._current = d; })
+
+      // svg
+      //   .selectAll("whatever")
+      //   .data(data_ready)
+      //   .enter()
+      //   .append("path")
+      //   .attr(
+      //     "d",
+      //     d3
+      //       .arc()
+      //       .innerRadius(0)
+      //       .outerRadius(outerRadius)
+      //   )
+      //   .attr("fill", function(d) {
+      //     console.log(d.data.key);
+      //     return color(d.data.key);
+      //   })
+      //   .attr("stroke", "black")
+      //   .style("stroke-width", "2px")
+      //   .style("opacity", 0.7)
+      //   .on("mouseover", function(d) {
+      //     console.log(d.data.key);
+      //     div
+      //       .transition()
+      //       .duration(300)
+      //       .style("opacity", 1);
+
+      //     div.html(d.data.key + "<br/>" + d.data.value);
+      //   })
+      //   .on("mousemove", function(d) {
+      //     d3.select("#tooltip")
+      //       .style("top", d3.event.pageY - 10 + "px")
+      //       .style("left", d3.event.pageX + 10 + "px");
+      //   })
+      //   .on("mouseout", function() {
+      //     d3.select("#tooltip").style("opacity", 0);
+      //   });
+
+
+
+      // pie.value( d => d[0])
+      // path = path.data(pie);
+      // path.transition()
+      //   .duration(1000).attrTween('d', arcTween);
+
+      // function arcTween(a) {
+      //   var i =  d3.interpolate(this._current, a);
+      //   this._current = i(0);
+      //   return function(t) {
+      //     return arc(i(t));
+      //   };
+      // }
+  };
 
 
   searchButton.addEventListener("click", () => {
