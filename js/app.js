@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const repoBarGraph = async () => {
     d3.selectAll("#bar-vis > *").remove();
+    d3.select(".main-vis-container > #tip").remove(); 
 
     const repoNames = await fetchRepos(userInputValue.value);
     const days = [
@@ -86,15 +87,20 @@ document.addEventListener("DOMContentLoaded", () => {
       barData.push({ day: days[i], commits: sumArr[i] });
     }
     
+const tip = d3
+  .select(".main-vis-container")
+  .append("div")
+  .attr("id", "tip")
+  .style("opacity", 0)
 
 
-    var tip = d3
-      .select("#bar-vis")
-      .append("div")
-      .attr("class", "tip")
-      .style("position", "absolute")
-      .style("z-index", "10")
-      .style("visibility", "hidden");
+    // var tip = d3
+    //   .select(".main-vis-container")
+    //   .append("div")
+    //   .attr("class", "tip")
+    //   .style("position", "absolute")
+    //   .style("z-index", "10")
+    //   .style("visibility", "hidden");
 
     var svg = d3.select("#bar-vis").attr("class", "background-style");
     var margin = { top: 20, right: 20, bottom: 42, left: 40 };
@@ -119,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     var g = svg
       .append("g")
-      .attr("tranform", `translate(${margin.left}, ${margin.top})`);
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     x.domain(
       barData.map(function(d) {
@@ -162,37 +168,46 @@ document.addEventListener("DOMContentLoaded", () => {
       .attr("class", "bar")
       .attr("transform", `scale(1,-1)translate(0,-${height})`)
       .attr("x", function(d) {
-
         return x(d.day);
       })
       .attr("y", function(d) {
-
         return y(d.commits);
       })
       .attr("width", x.bandwidth())
       .attr("height", function(d) {
-  
-        return  ((d.commits/maxy) * height);
+        return (d.commits / maxy) * height;
         // return height- d3.yScale(d.commits);
       })
+      // .on('mouseover', d => {
+      //   tip.transition().duration(200).style('opacity', 0.9);
+      //   tip.html(`Frequency: <span>${d.commits}</span>`).
+      //   style('left', `${d3.event.layerX}px`).
+      //   style('top', `${d3.event.layerY - 28}px`);
+      // })
+      // .on('mouseout', () => tip.transition().duration(500).style('opacity', 0));
       .on("mouseover", function(d) {
         console.log(d)
-        return tip
-          .text(d.commits)
-          .style("visibility", "visible")
-          .style("top", y(d.commits) - 13 + "px")
-          .style("left", x(d.days) + x.bandwidth() - 12 + "px");
+        tip.style("opacity", 1);
+        tip.html(`${d.commits} were <br/ >made on ${d.day}`)
+
+        d3.select("#tip")
+          .style("top", d3.event.pageY - 10 + "px")
+          .style("left", d3.event.pageX + 10 + "px");
+
       })
-      //.on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+      // .on("mousemove", function(d) {
+        
+      // })
       .on("mouseout", function() {
-        console.log("out")
-        return tip.style("visibility", "hidden");
-      });
+        d3.select("#tip").style("opacity", 0);
+      })
+
   };
 
 
   const repoPieChart = async () => {
     d3.selectAll("#pie-vis > *").remove();
+    d3.select(".main-vis-container > div#tooltip").remove();
 
     const repoNames = await fetchRepos(userInputValue.value);
     const repoCommits = await Promise.all(
@@ -391,6 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (userInputValue.value !== "") {
+
         showData();
         repoBarGraph();
         repoPieChart();
