@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const repo_api_call = await fetch(
       `https://api.github.com/users/${owner}/repos?client_id=${clientId}&client_secret=${clientSecret}`
     );
+    debugger
     const repo_data = await repo_api_call.json();
     const repoNames = repo_data.map(repo_datum => repo_datum.name);
     return repoNames;
@@ -36,8 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const repo_stats_api_call = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
     );
-
-    const repo_stats_data = await repo_stats_api_call.json() || [];
+      debugger
+    const repo_stats_data = await repo_stats_api_call.json();
  
 
     return repo_stats_data;
@@ -213,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         var xPosition = barPos + x(d.day) + 50;
-        var yPosition = -parseFloat(d3.select(this).attr("height")) +1010;
+        var yPosition = -parseFloat(d3.select(this).attr("height")) +900;
         debugger
           console.log(yPosition)
         //Update the tooltip position and value
