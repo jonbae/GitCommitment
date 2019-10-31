@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const reposContainer = document.querySelector(".main-profile-repos");
   const urlContainer = document.querySelector(".main-profile-url");
   const avatarContainer = document.querySelector(".main-profile-avatar");
+  const bioContainer = document.querySelector(".main-profile-bio");
+  const locationContainer = document.querySelector(".main-profile-location")
 
   const clientId = "Iv1.9e39903e84bf3a07";
   const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
     );
 
-    const repo_stats_data = (await repo_stats_api_call.json()) || [];
+    const repo_stats_data = await repo_stats_api_call.json() || [];
  
 
     return repo_stats_data;
@@ -46,8 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
     nameContainer.innerHTML = `Name: <span class="main__profile-value">${user.name}</span>`;
     unContainer.innerHTML = `Username: <span class="main__profile-value">${user.login}</span>`;
     reposContainer.innerHTML = `Repos: <span class="main__profile-value">${user.public_repos}</span>`;
-    urlContainer.innerHTML = `URL: <span class="main__profile-value">${user.html_url}</span>`;
     avatarContainer.innerHTML = `<img src="${user.avatar_url}" alt="avatar">`;
+    bioContainer.innerHTML = `Bio: <span class="main__profile-value">${user.bio}</span>`;
+    locationContainer.innerHTML = `Location: <span class="main__profile-value">${user.location}</span>`;
   };
 
   const repoBarGraph = async () => {
@@ -87,11 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
       barData.push({ day: days[i], commits: sumArr[i] });
     }
     
-const tip = d3
-  .select(".main-vis-container")
-  .append("div")
-  .attr("id", "tip")
-  .style("opacity", 0)
+    const tip = d3
+      .select(".main-vis-container")
+      .append("div")
+      .attr("id", "tip")
+      .style("opacity", 0)
 
 
     // var tip = d3
@@ -105,9 +108,9 @@ const tip = d3
     var svg = d3.select("#bar-vis").attr("class", "background-style");
     var margin = { top: 20, right: 20, bottom: 42, left: 40 };
 
-    var width = 500;
+    var width = 500; 
     var height = 500;
-
+	
     // var width = +svg.attr("width") - margin.left - margin.right;
     // var height = +svg.attr("height") - margin.top - margin.bottom;
   
@@ -122,6 +125,7 @@ const tip = d3
       .scaleBand()
       .rangeRound([height, 0])
       .padding(0.05);
+      debugger
 
     var g = svg
       .append("g")
@@ -185,22 +189,47 @@ const tip = d3
       //   style('top', `${d3.event.layerY - 28}px`);
       // })
       // .on('mouseout', () => tip.transition().duration(500).style('opacity', 0));
-      .on("mouseover", function(d) {
+      // .on("mouseover", function(d) {
+      //   console.log(d)
+      //   tip.style("opacity", 1);
+      //   tip.html(`${d.commits} were <br/ >made on ${d.day}`)
+      //   console.log();
+      //   console.log(x.bandwidth() - 12)
+      //   // debugger
+      //   d3.select("#tip")
+      //     .style("top", yPosition + "px")
+      //     .style("left",xPosition + "px");
+
+      // })
+      .on("mouseover", function(d, i) {
+        //Where I'm having problems - getting the X attribute!
         console.log(d)
-        tip.style("opacity", 1);
-        tip.html(`${d.commits} were <br/ >made on ${d.day}`)
+        tip.html(`${d.commits} commits `);
+        var barPos = parseFloat(
+          d3
+            .select(this.parentNode)
+            .attr("transform")
+            .split("(")[1]
+        );
 
+        var xPosition = barPos + x(d.day) + 50;
+        var yPosition = -parseFloat(d3.select(this).attr("height")) +1010;
+        debugger
+          console.log(yPosition)
+        //Update the tooltip position and value
         d3.select("#tip")
-          .style("top", d3.event.pageY - 10 + "px")
-          .style("left", d3.event.pageX + 10 + "px");
-
+          .style("left", xPosition + "px")
+          .style("top", yPosition + "px")
+    
+        //Show the tooltip
+        d3.select("#tip").style("opacity", 1);
       })
       // .on("mousemove", function(d) {
-        
+
       // })
       .on("mouseout", function() {
         d3.select("#tip").style("opacity", 0);
-      })
+      });
 
   };
 
