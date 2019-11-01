@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const repo_api_call = await fetch(
       `https://api.github.com/users/${owner}/repos?client_id=${clientId}&client_secret=${clientSecret}`
     );
-    debugger
+   
     const repo_data = await repo_api_call.json();
     const repoNames = repo_data.map(repo_datum => repo_datum.name);
     return repoNames;
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
       debugger
     const repo_stats_data = await repo_stats_api_call.json();
- 
+      debugger
 
     return repo_stats_data;
   };
