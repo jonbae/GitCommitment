@@ -787,7 +787,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const repo_stats_api_call = await fetch(
             `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
         );
+
         const repo_stats_data = await repo_stats_api_call.json();
+        console.log(repo_stats_data);
         return repo_stats_data;
     };
 
@@ -806,9 +808,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let repoStats = [];
         for (let i = 0; i < repoNames.length; i++) {
-            // console.log(`${user.login} and ${repoNames[i]}`);
-            repoStats.push(await fetchRepoStats(user.login, repoNames[i]));
-            // console.log(repoStats);
+            debugger;
+            let repoStat = await fetchRepoStats(user.login, repoNames[i]);
+            console.log(repoStat);
+            repoStats.push(repoStat);
         }
         console.log(repoStats);
 
@@ -826,15 +829,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // });
 
         const totalRepoCommits = formatTotalRepoCommits(repoStats);
-
         console.log(totalRepoCommits);
 
         // let pieData = [];
         // for (let i = 0; i < repoNames.length; i++) {
         //     pieData.push({ repo: repoNames[i], commits: totalRepoCommits[i] });
         // }
-        let pieData = formatPieData(repoNames, totalRepoCommits);
 
+        let pieData = formatPieData(repoNames, totalRepoCommits);
         console.log(pieData);
     };
 
@@ -857,6 +859,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return pieData;
     };
+
     userInputValue.addEventListener("keydown", e => {
         if (e.key === "Enter") {
             e.preventDefault();
