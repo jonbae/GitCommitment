@@ -746,6 +746,217 @@
 
 // // })
 
+// document.addEventListener("DOMContentLoaded", () => {
+//   const userInputValue = document.querySelector("#search-user");
+
+//   const searchButton = document.querySelector(".searchButton");
+//   const nameContainer = document.querySelector(".main-profile-name");
+//   const unContainer = document.querySelector(".main-profile-un");
+//   const reposContainer = document.querySelector(".main-profile-repos");
+//   const urlContainer = document.querySelector(".main-profile-url");
+//   const avatarContainer = document.querySelector(".main-profile-avatar");
+//   const bioContainer = document.querySelector(".main-profile-bio");
+//   const locationContainer = document.querySelector(".main-profile-location")
+
+//   const clientId = "Iv1.9e39903e84bf3a07";
+//   const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
+
+//   const fetchUsers = async user => {
+//     const user_api_call = await fetch(
+//       `https://api.github.com/users/${user}?client_id=${clientId}&client_secret=${clientSecret}`
+//     );
+
+//     const userData = await user_api_call.json();
+//     return userData;
+//   };
+
+//   const fetchRepos = async owner => {
+//     const repo_api_call = await fetch(
+//       `https://api.github.com/users/${owner}/repos?client_id=${clientId}&client_secret=${clientSecret}`
+//     );
+
+//     const repo_data = await repo_api_call.json();
+//     const repoNames = repo_data.map(repo_datum => repo_datum.name);
+//     return repoNames;
+//   };
+
+//   const fetchRepoStats = async (owner, repo) => {
+
+//     const repo_stats_api_call = await fetch(
+//       `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
+//     );
+//       debugger
+//     const repo_stats_data = await repo_stats_api_call.json();
+//       debugger
+
+//     return repo_stats_data;
+//   };
+
+//   const showData = async () => {
+//     const user = await fetchUsers(userInputValue.value);
+//     nameContainer.innerHTML = `Name: <span class="main__profile-value">${user.name}</span>`;
+//     unContainer.innerHTML = `Username: <span class="main__profile-value">${user.login}</span>`;
+//     reposContainer.innerHTML = `Repos: <span class="main__profile-value">${user.public_repos}</span>`;
+//     avatarContainer.innerHTML = `<img src="${user.avatar_url}" alt="avatar">`;
+//     bioContainer.innerHTML = `Bio: <span class="main__profile-value">${user.bio}</span>`;
+//     locationContainer.innerHTML = `Location: <span class="main__profile-value">${user.location}</span>`;
+//   };
+
+//   const repoBarGraph = async () => {
+//     d3.selectAll("#bar-vis > *").remove();
+//     d3.select(".main-vis-container > #tip").remove();
+
+//     const repoNames = await fetchRepos(userInputValue.value);
+//     const days = [
+//       "Sunday",
+//       "Monday",
+//       "Tuesday",
+//       "Wednesday",
+//       "Thursday",
+//       "Friday",
+//       "Saturday"
+//     ];
+//     const reposWeekCommits = await Promise.all(
+//       repoNames.map(async repoName => {
+//         const repoStats = await fetchRepoStats(userInputValue.value, repoName);
+//         let dayCommitArr = Array(7).fill(0);
+//         repoStats.map(repoStat => {
+//           repoStat.days.map((day, i) => (dayCommitArr[i] += day));
+//         });
+//         return dayCommitArr;
+//       })
+//     );
+
+//     let sumArr = Array(7).fill(0);
+//     reposWeekCommits.map(repoDayCommits =>
+//       repoDayCommits.map((repoDayCommit, i) => (sumArr[i] += repoDayCommit))
+//     );
+
+//     let barData = [];
+
+//     for (let i = 0; i < days.length; i++) {
+//       barData.push({ day: days[i], commits: sumArr[i] });
+//     }
+
+//     const tip = d3
+//       .select(".main-vis-container")
+//       .append("div")
+//       .attr("id", "tip")
+//       .style("opacity", 0)
+
+//     // var tip = d3
+//     //   .select(".main-vis-container")
+//     //   .append("div")
+//     //   .attr("class", "tip")
+//     //   .style("position", "absolute")
+//     //   .style("z-index", "10")
+//     //   .style("visibility", "hidden");
+
+//     var svg = d3.select("#bar-vis").attr("class", "background-style");
+//     var margin = { top: 20, right: 20, bottom: 42, left: 40 };
+
+//     var width = 500;
+//     var height = 500;
+
+//     // var width = +svg.attr("width") - margin.left - margin.right;
+//     // var height = +svg.attr("height") - margin.top - margin.bottom;
+
+//     // const maxy = Math.max(barData.map( barDatum => barDatum.commits));
+//     const maxy = Math.max.apply(Math,barData.map((barDatum) => barDatum.commits ))
+
+//     var x = d3
+//       .scaleBand()
+//       .rangeRound([0, width])
+//       .padding(0.05);
+//     var y = d3
+//       .scaleBand()
+//       .rangeRound([height, 0])
+//       .padding(0.05);
+//       debugger
+
+//     var g = svg
+//       .append("g")
+//       .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+//     x.domain(
+//       barData.map(function(d) {
+//         return d.day;
+//       })
+//     );
+//     y.domain(
+//       // barData.map(function(d) {
+//       //   return d.commits;
+//       // })
+//       0
+//     );
+
+//     g.append("g")
+//       .attr("class", "axis axis--x")
+//       .attr("transform", `translate(0,${height})`)
+//       .call(d3.axisBottom(x))
+//       .append("text")
+//       .attr("y", 6)
+//       .attr("dy", "2.5em")
+//       .attr("dx", width / 2 - margin.left)
+//       .attr("text-anchor", "start")
+//       .text("Day");
+
+//     g.append("g")
+//       .attr("class", "axis axis--y")
+//       .call(d3.axisLeft(y).ticks(20))
+//       .append("text")
+//       .attr("transform", "rotate(-90)")
+//       .attr("y", 6)
+//       .attr("dy", "1em")
+//       .attr("text-anchor", "end")
+//       .text("Commits");
+
+//     g.selectAll(".bar")
+//       .data(barData)
+//       .enter()
+//       .append("rect")
+//       .attr("class", "bar")
+//       .attr("transform", `scale(1,-1)translate(0,-${height})`)
+//       .attr("x", function(d) {
+//         return x(d.day);
+//       })
+//       .attr("y", function(d) {
+//         return y(d.commits);
+//       })
+//       .attr("width", x.bandwidth())
+//       .attr("height", function(d) {
+//         return (d.commits / maxy) * height;
+//         // return height- d3.yScale(d.commits);
+//       })
+//       // .on('mouseover', d => {
+//       //   tip.transition().duration(200).style('opacity', 0.9);
+//       //   tip.html(`Frequency: <span>${d.commits}</span>`).
+//       //   style('left', `${d3.event.layerX}px`).
+//       //   style('top', `${d3.event.layerY - 28}px`);
+//       // })
+//       // .on('mouseout', () => tip.transition().duration(500).style('opacity', 0));
+//       // .on("mouseover", function(d) {
+//       //   console.log(d)
+//       //   tip.style("opacity", 1);
+//       //   tip.html(`${d.commits} were <br/ >made on ${d.day}`)
+//       //   console.log();
+//       //   console.log(x.bandwidth() - 12)
+//       //   // debugger
+//       //   d3.select("#tip")
+//       //     .style("top", yPosition + "px")
+//       //     .style("left",xPosition + "px");
+
+//       // })
+//       .on("mouseover", function(d, i) {
+//         //Where I'm having problems - getting the X attribute!
+//         console.log(d)
+//         tip.html(`${d.commits} commits `);
+//         var barPos = parseFloat(
+//           d3
+//             .select(this.parentNode)
+//             .attr("transform")
+//             .split("(")[1]
+//         );
 document.addEventListener("DOMContentLoaded", () => {
     const userInputValue = document.querySelector("#search-user");
 
