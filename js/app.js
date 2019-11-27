@@ -784,35 +784,50 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const fetchRepoStats = async (owner, repo) => {
+        console.log(owner);
+        console.log(repo);
         const repo_stats_api_call = await fetch(
             `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
         );
 
         const repo_stats_data = await repo_stats_api_call.json();
         console.log(repo_stats_data);
+        // if (
+        //     Object.keys(repo_stats_data).length === 0 &&
+        //     repo_stats_data.constructor === Object
+        // ) {
+        //     fetchRepoStats(owner, repo);
+        // }
         return repo_stats_data;
     };
 
     const showData = async () => {
         // console.log(fetchUsers(userInputValue.value));
         const user = await fetchUsers(userInputValue.value);
-        nameContainer.innerHTML = `Name: <span class="main__profile-value">${user.name}</span>`;
-        unContainer.innerHTML = `Username: <span class="main__profile-value">${user.login}</span>`;
-        reposContainer.innerHTML = `Repos: <span class="main__profile-value">${user.public_repos}</span>`;
-        avatarContainer.innerHTML = `<img src="${user.avatar_url}" alt="avatar">`;
-        bioContainer.innerHTML = `Bio: <span class="main__profile-value">${user.bio}</span>`;
-        locationContainer.innerHTML = `Location: <span class="main__profile-value">${user.location}</span>`;
-
+        profileData(user);
         const repoNames = await fetchRepos(user.login);
         console.log(repoNames);
 
-        let repoStats = [];
+        let repoStatPromises = [];
+        // console.log(fetchRepoStats(user.login, repoNames[0]));
+        // repoNames.forEach(async repoName => {
+        //     // let repoStat = await fetchRepoStats(user.login, repoName);
+        //     repoStatPromise = fetch(
+        //         `https://api.github.com/repos/${user.login}/${repoName}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
+        //     );
+        //     console.log(repoStatPromise);
+        //     let repoStatPromiseJSON = await repoStatPromise.json();
+        //     repoStatPromises.push(repoStatPromiseJSON);
+        // });
+
         for (let i = 0; i < repoNames.length; i++) {
-            debugger;
-            let repoStat = await fetchRepoStats(user.login, repoNames[i]);
-            console.log(repoStat);
-            repoStats.push(repoStat);
+            let repoStatPromise = fetchRepoStats(user.login, repoNames[i]);
+            console.log(repoStatPromise);
+            repoStatPromises.push(repoStatPromise);
         }
+        console.log("these are the repoStatPromises");
+        console.log(repoStatPromises);
+        let repoStats = await Promise.all(repoStatPromises);
         console.log(repoStats);
 
         // doesn't do anything
@@ -828,16 +843,16 @@ document.addEventListener("DOMContentLoaded", () => {
         //     totalRepoCommits.push(totalRepoCommit);
         // });
 
-        const totalRepoCommits = formatTotalRepoCommits(repoStats);
-        console.log(totalRepoCommits);
+        // const totalRepoCommits = formatTotalRepoCommits(repoStats);
+        // console.log(totalRepoCommits);
 
         // let pieData = [];
         // for (let i = 0; i < repoNames.length; i++) {
         //     pieData.push({ repo: repoNames[i], commits: totalRepoCommits[i] });
         // }
 
-        let pieData = formatPieData(repoNames, totalRepoCommits);
-        console.log(pieData);
+        // let pieData = formatPieData(repoNames, totalRepoCommits);
+        // console.log(pieData);
     };
 
     const formatTotalRepoCommits = repoStats => {
@@ -852,6 +867,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return totalRepoCommits;
     };
 
+    const profileData = user => {
+        nameContainer.innerHTML = `Name: <span class="main__profile-value">${user.name}</span>`;
+        unContainer.innerHTML = `Username: <span class="main__profile-value">${user.login}</span>`;
+        reposContainer.innerHTML = `Repos: <span class="main__profile-value">${user.public_repos}</span>`;
+        avatarContainer.innerHTML = `<img src="${user.avatar_url}" alt="avatar">`;
+        bioContainer.innerHTML = `Bio: <span class="main__profile-value">${user.bio}</span>`;
+        locationContainer.innerHTML = `Location: <span class="main__profile-value">${user.location}</span>`;
+    };
+
     const formatPieData = (repoNames, totalRepoCommits) => {
         let pieData = [];
         for (let i = 0; i < repoNames.length; i++) {
@@ -864,6 +888,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === "Enter") {
             e.preventDefault();
             if (userInputValue.value !== "") {
+                showData();
                 showData();
             }
         }
