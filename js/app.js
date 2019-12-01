@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const userData = await user_api_call.json();
     // will lead to TypeError: Failed to execute 'json' on 'Response': body stream is locked
     // because `user_api_call` is being used twice
-    // console.log(user_api_call.json());
+    // // console.log(user_api_call.json());
     // console.log(userData);
     return userData;
   };
@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const fetchRepoStats = async (owner, repo) => {
-    console.log(owner);
-    console.log(repo);
+    // console.log(owner);
+    // console.log(repo);
     // const repo_stats_api_call = setTimeout(
     //   fetch(
     //     `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     const repo_stats_data = await repo_stats_api_call.json();
-    console.log(repo_stats_data);
+    // console.log(repo_stats_data);
 
     return repo_stats_data;
   };
@@ -58,28 +58,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = await fetchUsers(userInputValue.value);
     profileData(user);
     const repoNames = await fetchRepos(user.login);
-    console.log(repoNames);
+    // console.log(repoNames);
 
     let repoStatPromises = [];
 
     for (let i = 0; i < repoNames.length; i++) {
       let repoStatPromise = fetchRepoStats(user.login, repoNames[i]);
-      console.log(repoStatPromise);
+      // console.log(repoStatPromise);
       repoStatPromises.push(repoStatPromise);
     }
-    console.log("these are the repoStatPromises");
-    console.log(repoStatPromises);
+    // console.log("these are the repoStatPromises");
+    // console.log(repoStatPromises);
     let repoStats = await Promise.all(repoStatPromises);
-    console.log(repoStats);
+    // console.log(repoStats);
 
     const totalRepoCommits = formatTotalRepoCommits(repoStats);
-    console.log(totalRepoCommits);
+    // console.log(totalRepoCommits);
 
     let pieData = formatPieData(repoNames, totalRepoCommits);
-    console.log(pieData);
+    // console.log(pieData);
 
     const totalWeekCommits = formatTotalWeekCommits(repoStats);
-    console.log(totalWeekCommits);
+    // console.log(totalWeekCommits);
 
     const days = [
       "Sunday",
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     let barData = formatBarData(days, totalWeekCommits);
-    console.log(barData);
+    //   console.log(barData);
 
     barGenerator(barData);
     pieGenerator(pieData);
@@ -105,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
         week.days.map((day, i) => (totalWeekCommits[i] += day));
       });
     });
-    console.log(totalWeekCommits);
     return totalWeekCommits;
   };
 
@@ -200,8 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .attr("d", arc)
       .on("mouseover", function(d) {
-        // console.log(data_ready);
-        // console.log(d);
         div.style("opacity", 1);
 
         div.html(`${d.data.repo} has <br/> ${d.data.commits} commits`);
@@ -348,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // })
       .on("mouseover", function(d, i) {
         //Where I'm having problems - getting the X attribute!
-        console.log(d);
+        // console.log(d);
         tip.html(`${d.commits} commits `);
         var barPos = parseFloat(
           d3.select(this.parentNode).attr("transform").split("(")[1]
@@ -357,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
         var xPosition = barPos + x(d.day) + 50;
         var yPosition = -parseFloat(d3.select(this).attr("height")) + 900;
         debugger;
-        console.log(yPosition);
+        // console.log(yPosition);
         //Update the tooltip position and value
         d3
           .select("#tip")
