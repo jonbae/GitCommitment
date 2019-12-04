@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clientId = "Iv1.9e39903e84bf3a07";
   const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
 
-  const fetchUsers = async user => {
+  const fetchUser = async user => {
     const user_api_call = await fetch(
       `https://api.github.com/users/${user}?client_id=${clientId}&client_secret=${clientSecret}`
     );
@@ -44,33 +44,38 @@ document.addEventListener("DOMContentLoaded", () => {
     //   ),
     //   1000
     // );
-    const repo_stats_api_call = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
-    );
-
-    const repo_stats_data = await repo_stats_api_call.json();
-    // console.log(repo_stats_data);
-
-    return repo_stats_data;
+    try {
+      const repo_stats_api_call = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/stats/commit_activity?client_id=${clientId}&client_secret=${clientSecret}`
+      );
+      if (repo_stats_api_call.status !== 200) {
+        throw new Error("Unprocessable Repository");
+      }
+      const repo_stats_data = await repo_stats_api_call.json();
+      // console.log(repo_stats_data);
+      // console.log(repo);
+      // console.log(repo_stats_data);
+      return repo_stats_data;
+    } catch (error) {
+      console.log(`Fetch of ${repo} was unsuccessful`);
+    }
   };
 
   const showData = async () => {
-    const user = await fetchUsers(userInputValue.value);
+    const user = await fetchUser(userInputValue.value);
     profileData(user);
     const repoNames = await fetchRepos(user.login);
     // console.log(repoNames);
 
-    let repoStatPromises = [];
+    let repoStats = [];
 
     for (let i = 0; i < repoNames.length; i++) {
-      let repoStatPromise = fetchRepoStats(user.login, repoNames[i]);
-      // console.log(repoStatPromise);
-      repoStatPromises.push(repoStatPromise);
+      let repoStat = await fetchRepoStats(user.login, repoNames[i]);
+
+      if (repoStat !== undefined) {
+        repoStats.push(repoStat);
+      }
     }
-    // console.log("these are the repoStatPromises");
-    // console.log(repoStatPromises);
-    let repoStats = await Promise.all(repoStatPromises);
-    // console.log(repoStats);
 
     const totalRepoCommits = formatTotalRepoCommits(repoStats);
     // console.log(totalRepoCommits);
@@ -237,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tip = d3
       .select(".main-vis-container")
       .append("div")
-      .attr("id", "tip")
+      .attr("id", "tip") // showData();
       .style("opacity", 0);
 
     // var tip = d3
@@ -377,7 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       if (userInputValue.value !== "") {
         showData();
-        showData();
+        // showData();
       }
     }
   });
