@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const avatarContainer = document.querySelector(".main-profile-avatar");
   const bioContainer = document.querySelector(".main-profile-bio");
   const locationContainer = document.querySelector(".main-profile-location");
+  const demoButton = document.querySelector("#demo");
 
   const clientId = "Iv1.9e39903e84bf3a07";
   const clientSecret = "0bf1a222c2f3f2a99c08bc84ba5fde728b6e4e41";
@@ -381,10 +382,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (userInputValue.value !== "") {
+        // d3.select()
+        // d3.select(".main-vis-container > #demo").remove();
+
         showData();
         // showData();
       }
     }
+  });
+  searchButton.addEventListener("click", () => {
+    if (userInputValue.value != "") {
+      showData();
+    }
+  });
+
+  demoButton.addEventListener("click", () => {
+    userInputValue.value = "jonbae";
+    showData();
   });
 });
 

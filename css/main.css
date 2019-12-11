@@ -1,54 +1,53 @@
-@import "reset.css"; 
-@import "background.scss"; 
+@import "reset.css";
+@import "background.scss";
 
-.main{ 
+.main {
   height: 100vh;
 }
 
-.main-profile > *{ 
+.main-profile > * {
   /* display: flex;
   justify-content: center; */
   width: 50%;
 }
 
-.main-profile{
+.main-profile {
   display: flex;
   justify-content: space-between;
   padding: 30px;
 }
 
 .main-vis-container {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 
-.main-profile-container{
+.main-profile-container {
   display: flex;
 }
 
 .main-profile-credentials {
-    font-size: x-large;
-    padding: 0 20px;
+  font-size: x-large;
+  padding: 0 20px;
 }
 
-header{
+header {
   background-color: #00d176;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 50px;
   padding: 0 50px;
-
 }
 
-.container{ 
-  display: block; 
+.container {
+  display: block;
   /* justify-content: space-around; */
   /* padding: 50px; */
 }
 
-div.main-profile-avatar > img { 
-  height: 254px; 
+div.main-profile-avatar > img {
+  height: 254px;
   width: auto;
 }
 
@@ -63,8 +62,7 @@ div.main-profile-avatar > img {
   border-radius: 10px;
   -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
   -mox-box-shadow: 4px 4px 4px 10px rgba(0, 0, 0, 0.4);
-  box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4)
- 
+  box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
 }
 
 #tooltip.hidden {
@@ -76,6 +74,19 @@ div.main-profile-avatar > img {
   font-family: sans-serif;
   font-size: 16px;
   line-height: 20px;
+}
+.main-profile-credentials > div {
+  display: flex;
+  /* justify-content: center; */
+  margin: 20px;
+  margin-left: 0;
+}
+
+button#demo {
+  border: 2px solid black;
+  background-color: white;
+  border-radius: 5px;
+  padding: 3px 12px;
 }
 
 /* .main-vis-container{ 
@@ -89,7 +100,7 @@ div.main-profile-avatar > img {
   font-size: 48px;
   margin: 10px 0;
   font-weight: bold;
-      color: #8FB339;
+  color: #8fb339;
 }
 .main-subtitle {
   font-size: 20px;
@@ -97,27 +108,26 @@ div.main-profile-avatar > img {
 }
 
 .main-input-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .main-profile > p {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 #vis > p {
-    font-size: 24px;
+  font-size: 24px;
 }
-
 
 .main-input-container > * {
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 12px;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
-#bar-vis{ 
-  height: 600px; 
-  width: 600px; 
+#bar-vis {
+  height: 600px;
+  width: 600px;
 }
 /* 
 .bar{ 
@@ -125,11 +135,9 @@ div.main-profile-avatar > img {
 
 }   */
 
-
-
 /* tip */
 
-#tip{
+#tip {
   position: absolute;
   width: 63px;
   font-size: 13px;
@@ -150,4 +158,3 @@ div.main-profile-avatar > img {
     border-width: .5rem .5rem 0 .5rem;
     border-color: #444 transparent transparent transparent;
     }  */
-

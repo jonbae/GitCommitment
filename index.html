@@ -14,21 +14,21 @@
 <body>
   <!-- main start -->
 
-<div class="main" id="main">
-  <div class="container">
-    <header>
-      <h1>GitCommitment</h1>
-      <label>
-        <input type="text" id="search-user" class="main-input" placeholder="Enter a username">
-        <button type="submit" class="searchButton">Search</button>
-      </label>
-    </header>
-    <div class="main-profile">
-      <div class="main-header">
-        <h1 class="main-title">GitCommitment - <br> git commit visualization <br> for Github </h1>
-        <p class="main-subtitle">Check out the repos, followers and commit <br> just by entering a username</p>
-      </div>
-      <!-- <div class="main-input-container"> -->
+  <div class="main" id="main">
+    <div class="container">
+      <header>
+        <h1>GitCommitment</h1>
+        <label>
+          <input type="text" id="search-user" class="main-input" placeholder="Enter a username">
+          <button type="submit" class="searchButton">Search</button>
+        </label>
+      </header>
+      <div class="main-profile">
+        <div class="main-header">
+          <h1 class="main-title">GitCommitment - <br> git commit visualization <br> for Github </h1>
+          <p class="main-subtitle">Check out the repos, followers and commit <br> just by entering a username</p>
+        </div>
+        <!-- <div class="main-input-container"> -->
         <!-- <input type="text" id="search-user" class="main-input" placeholder="Enter a username"> -->
 
         <!-- <span>
@@ -36,26 +36,31 @@
         </span> -->
         <!-- <button type="submit" class="searchButton">Search</button> -->
 
-      <!-- </div> -->
-      <div class="main-profile-container">
-     
-          <div class="main-profile-avatar"></div>
+        <!-- </div> -->
+        <div class="main-profile-container">
+
+          <div class="main-profile-avatar"><img src="./img/profile_pic.jpeg" alt="avatar">`</div>
           <div class="main-profile-credentials">
-            <p class="main-profile-name"></p>
+            <p class="main-profile-name">Name: Jonathan Bae</p>
             <p class="main-profile-un"></p>
             <p class="main-profile-repos"></p>
             <p class="main-profile-url"></p>
             <p class="main-profile-location"></p>
             <p class="main-profile-bio"></p>
+
+
+            <div>
+              <button id="demo">Demo</button>
+            </div>
           </div>
-     
+
+
+        </div>
 
       </div>
 
-    </div>
 
-
-    <!-- <div class="main-vis-container">
+      <!-- <div class="main-vis-container">
       <svg id="pie-vis">
       
       </svg>
@@ -64,17 +69,20 @@
 
       </svg>
     </div> -->
-    <div class="main-vis-container">
-      <svg id="bar-vis"> 
+      <div class="main-vis-container">
 
-      </svg>
-      <svg id="pie-vis"> 
-        
-      </svg>
+
+
+        <svg id="bar-vis">
+
+        </svg>
+        <svg id="pie-vis">
+
+        </svg>
+      </div>
     </div>
   </div>
-</div>
-  
+
   <!-- <script src="./js/pie.js"></script> -->
 
   <!-- main end -->
